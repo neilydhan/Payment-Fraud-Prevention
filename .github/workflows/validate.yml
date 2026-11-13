@@ -1,0 +1,22 @@
+name: Validate book
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  book:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: mdbook@0.4.52
+      - name: Check image links
+        run: ./scripts/check-images.sh
+      - name: Build HTML
+        run: mdbook build

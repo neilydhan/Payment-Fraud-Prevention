@@ -1,0 +1,31 @@
+%%{init: {"flowchart": {"subGraphTitleMargin": {"top": 8, "bottom": 28}}}}%%
+flowchart TB
+  subgraph L1[第一站：3DS Server<br/>商户或支付服务商一侧]
+    direction TB
+    S1{请求能否发出}
+    S1 -->|自身校验未通过<br/>或被风控拦下| O1[请求没有发出<br/>卡组织和发卡行<br/>都不知情]
+  end
+
+  subgraph L2[第二站：卡组织目录服务器 DS<br/>请求没有到发卡行]
+    direction TB
+    D1{DS 如何处理}
+    D1 -->|网络层拦截或超时| O2[收不到标准 3DS 消息<br/>只能记为技术错误]
+    D1 -->|消息本身有问题| O3[DS 返回错误消息<br/>错误组件标记为 D]
+    D1 -->|由 DS 代为处理| O4[DS 直接给出结果<br/>例如 A 尝试认证]
+  end
+
+  subgraph L3[第三站：发卡行认证服务 ACS<br/>请求到了发卡行]
+    direction TB
+    A1{发卡行评估风险}
+    A1 --> O5[Y 认证成功<br/>C 或 D 需要挑战]
+    A1 --> O6[N 未通过，R 拒绝<br/>U 无法完成<br/>附原因码<br/>例如 11 疑似欺诈]
+    A1 -->|消息有问题或超时| O7[ACS 返回错误消息<br/>错误组件标记为 A]
+  end
+
+  L1 ==>|发出认证请求| L2
+  L2 ==>|转发给发卡行| L3
+
+  classDef noissuer fill:#F3F4F6,stroke:#9CA3AF,color:#374151
+  classDef issuer fill:#E0E7FF,stroke:#4F46E5,color:#1E1B4B
+  class O1,O2,O3,O4 noissuer
+  class O5,O6,O7 issuer

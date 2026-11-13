@@ -1,0 +1,17 @@
+[book]
+authors = ["Neil Han"]
+language = "zh-CN"
+src = "."
+exclude = [".git/**", ".github/**", "book/**", "assets/**/*.mmd", ".DS_Store"]
+title = "支付欺诈防控：出海团队实战指南"
+description = "面向出海团队的海外卡支付欺诈防控指南：认证、卡组织规则、风控体系与运营"
+
+[output.html]
+default-theme = "light"
+preferred-dark-theme = "navy"
+no-section-label = true
+git-repository-url = "https://github.com/neilydhan/Payment-Fraud-Prevention"
+print = { enable = true }
+
+[build]
+build-dir = "book"

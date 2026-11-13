@@ -1,0 +1,23 @@
+sequenceDiagram
+  autonumber
+  participant C as 持卡人浏览器
+  participant M as 商户与支付服务商<br/>(3DS Server)
+  participant DS as 卡组织目录服务器<br/>(DS)
+  participant ACS as 发卡行认证服务<br/>(ACS)
+  participant I as 发卡行授权系统
+  C->>M: 提交卡号和订单
+  M->>C: 采集设备与浏览器信息
+  C-->>M: 回传浏览器信息
+  M->>DS: AReq 认证请求
+  DS->>ACS: 转发 AReq
+  ACS-->>DS: ARes 风险评估结果
+  DS-->>M: ARes
+  alt 低风险，无感通过
+    Note over M: transStatus = Y
+  else 需要进一步验证
+    M->>C: 展示挑战页面
+    C->>ACS: 输入验证码或在银行 App 确认
+    ACS-->>M: 最终认证结果
+  end
+  M->>I: 授权请求，附带认证结果
+  I-->>M: 批准或拒绝
